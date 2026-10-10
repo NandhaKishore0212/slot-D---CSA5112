@@ -1,0 +1,25 @@
+
+#include <stdio.h>
+
+int main() {
+    char s[2000];
+    int freq[256] = {0};
+    int i;
+
+    printf("Enter ciphertext:\n");
+    fgets(s, sizeof(s), stdin);
+
+    for (i = 0; s[i] != '\0'; i++) {
+        unsigned char ch = s[i];
+        if (ch != ' ' && ch != '\n')
+            freq[ch]++;
+    }
+
+    printf("\nCharacter Frequencies:\n");
+    for (i = 0; i < 256; i++) {
+        if (freq[i] > 0)
+            printf("%c : %d\n", i, freq[i]);
+    }
+
+    return 0;
+}
