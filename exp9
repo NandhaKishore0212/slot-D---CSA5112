@@ -1,0 +1,66 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char matrix[5][5], text[300];
+    int r1, c1, r2, c2, i, j, k;
+    char a, b;
+
+    printf("Enter the 25 letters of the Playfair matrix:\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+            scanf(" %c", &matrix[i][j]);
+            matrix[i][j] = toupper(matrix[i][j]);
+        }
+    }
+
+    printf("Enter ciphertext without spaces:\n");
+    scanf("%299s", text);
+
+    printf("Decrypted text: ");
+
+    for (k = 0; text[k] != '\0'; k += 2) {
+        a = toupper(text[k]);
+        b = toupper(text[k + 1]);
+
+        if (a == 'J') a = 'I';
+        if (b == 'J') b = 'I';
+
+        r1 = c1 = r2 = c2 = -1;
+
+        for (i = 0; i < 5; i++) {
+            for (j = 0; j < 5; j++) {
+                if (matrix[i][j] == a) {
+                    r1 = i; c1 = j;
+                }
+                if (matrix[i][j] == b) {
+                    r2 = i; c2 = j;
+                }
+            }
+        }
+
+        if (r1 == -1 || r2 == -1) {
+            printf("\nInvalid matrix or ciphertext.\n");
+            return 1;
+        }
+
+        if (r1 == r2) {
+            printf("%c%c",
+                matrix[r1][(c1 + 4) % 5],
+                matrix[r2][(c2 + 4) % 5]);
+        } else if (c1 == c2) {
+            printf("%c%c",
+                matrix[(r1 + 4) % 5][c1],
+                matrix[(r2 + 4) % 5][c2]);
+        } else {
+            printf("%c%c",
+                matrix[r1][c2],
+                matrix[r2][c1]);
+        }
+    }
+
+    printf("\n");
+    return 0;
+}
