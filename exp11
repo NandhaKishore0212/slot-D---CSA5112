@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <math.h>
+
+int main(void) {
+    long double factorial = 1.0L;
+
+    for (int i = 1; i <= 25; i++) {
+        factorial *= i;
+    }
+
+    long double uniqueKeys = factorial / 1250.0L;
+
+    printf("Total Playfair keys = 25! = %.0Le\n", factorial);
+    printf("Approximate power of 2 = 2^%.2Lf\n",
+           log2l(factorial));
+
+    printf("Effectively unique keys = 25! / 1250\n");
+    printf("Unique keys = %.0Le\n", uniqueKeys);
+    printf("Approximate power of 2 = 2^%.2Lf\n",
+           log2l(uniqueKeys));
+
+    return 0;
+}
