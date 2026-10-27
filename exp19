@@ -1,0 +1,67 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+
+int main(void) {
+    // Demonstration key and IV only. Do not use these
+    // fixed values for real security.
+    unsigned char key[24] = {
+        1,2,3,4,5,6,7,8,
+        9,10,11,12,13,14,15,16,
+        17,18,19,20,21,22,23,24
+    };
+    unsigned char iv[8] = {0,1,2,3,4,5,6,7};
+
+    unsigned char plaintext[] = "Hello CBC encryption!";
+    unsigned char ciphertext[128];
+    unsigned char recovered[128];
+    int len, ciphertext_len, recovered_len;
+
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) return 1;
+
+    if (EVP_EncryptInit_ex(ctx, EVP_des_ede3_cbc(),
+                           NULL, key, iv) != 1)
+        goto error;
+
+    if (EVP_EncryptUpdate(ctx, ciphertext, &len,
+                          plaintext, strlen((char *)plaintext)) != 1)
+        goto error;
+    ciphertext_len = len;
+
+    if (EVP_EncryptFinal_ex(ctx, ciphertext + len, &len) != 1)
+        goto error;
+    ciphertext_len += len;
+
+    printf("Ciphertext (hex): ");
+    for (int i = 0; i < ciphertext_len; i++)
+        printf("%02X", ciphertext[i]);
+    printf("\n");
+
+    EVP_CIPHER_CTX_reset(ctx);
+
+    if (EVP_DecryptInit_ex(ctx, EVP_des_ede3_cbc(),
+                           NULL, key, iv) != 1)
+        goto error;
+
+    if (EVP_DecryptUpdate(ctx, recovered, &len,
+                          ciphertext, ciphertext_len) != 1)
+        goto error;
+    recovered_len = len;
+
+    if (EVP_DecryptFinal_ex(ctx, recovered + len, &len) != 1)
+        goto error;
+    recovered_len += len;
+    recovered[recovered_len] = '\0';
+
+    printf("Recovered: %s\n", recovered);
+    EVP_CIPHER_CTX_free(ctx);
+    return 0;
+
+error:
+    ERR_print_errors_fp(stderr);
+    EVP_CIPHER_CTX_free(ctx);
+    return 1;
+}
