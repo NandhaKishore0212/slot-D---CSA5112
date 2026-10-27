@@ -1,0 +1,55 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(void) {
+    char cipher[1000];
+    double freq[26] = {
+        8.12,1.49,2.71,4.32,12.02,2.30,2.03,5.92,
+        7.31,0.10,0.69,3.98,2.61,6.95,7.68,1.82,
+        0.11,6.02,6.28,9.10,2.88,1.11,2.09,0.17,
+        2.11,0.07
+    };
+    double score[26] = {0};
+    int top = 10;
+
+    printf("Enter ciphertext: ");
+    if (!fgets(cipher, sizeof(cipher), stdin))
+        return 1;
+
+    for (int k = 0; k < 26; k++) {
+        for (int i = 0; cipher[i]; i++) {
+            if (isalpha((unsigned char)cipher[i])) {
+                int x = tolower((unsigned char)cipher[i]) - 'a';
+                int p = (x - k + 26) % 26;
+                score[k] += freq[p];
+            }
+        }
+    }
+
+    for (int rank = 0; rank < top; rank++) {
+        int best = -1;
+        for (int k = 0; k < 26; k++) {
+            if (score[k] >= 0 &&
+                (best == -1 || score[k] > score[best]))
+                best = k;
+        }
+
+        if (best == -1) break;
+
+        printf("\nShift %2d: ", best);
+        for (int i = 0; cipher[i]; i++) {
+            if (isalpha((unsigned char)cipher[i])) {
+                char ch = tolower((unsigned char)cipher[i]);
+                putchar('a' + (ch - 'a' - best + 26) % 26);
+            } else {
+                putchar(cipher[i]);
+            }
+        }
+
+        score[best] = -1;
+    }
+
+    return 0;
+}
