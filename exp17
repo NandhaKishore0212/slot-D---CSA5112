@@ -1,0 +1,31 @@
+
+#include <stdio.h>
+#include <stdint.h>
+
+#define ROUNDS 16
+
+void make_decryption_keys(
+    const uint64_t encryption_keys[ROUNDS],
+    uint64_t decryption_keys[ROUNDS])
+{
+    for (int i = 0; i < ROUNDS; i++)
+        decryption_keys[i] = encryption_keys[ROUNDS - 1 - i];
+}
+
+int main(void) {
+    uint64_t enc[ROUNDS], dec[ROUNDS];
+
+    // Demonstration subkeys; replace these with the
+    // 48-bit subkeys produced by the DES key schedule.
+    for (int i = 0; i < ROUNDS; i++)
+        enc[i] = i + 1;
+
+    make_decryption_keys(enc, dec);
+
+    printf("Decryption subkey order:\n");
+    for (int i = 0; i < ROUNDS; i++)
+        printf("K%d = %llu\n", i + 1,
+               (unsigned long long)dec[i]);
+
+    return 0;
+}
