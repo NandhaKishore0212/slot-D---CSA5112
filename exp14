@@ -1,0 +1,48 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int mod26(int x) {
+    return (x % 26 + 26) % 26;
+}
+
+int main(void) {
+    char plain[] = "send more money";
+    char target[] = "cash not needed";
+    char p[100], t[100], c[100];
+    int key[] = {9, 0, 1, 7, 23, 15, 21,
+                 14, 11, 11, 2, 8, 9};
+    int n = 0, m = 0;
+
+    for (int i = 0; plain[i]; i++)
+        if (isalpha((unsigned char)plain[i]))
+            p[n++] = tolower((unsigned char)plain[i]);
+
+    for (int i = 0; target[i]; i++)
+        if (isalpha((unsigned char)target[i]))
+            t[m++] = tolower((unsigned char)target[i]);
+
+    if (n != m) {
+        printf("Message lengths do not match.\n");
+        return 1;
+    }
+
+    printf("Ciphertext: ");
+    for (int i = 0; i < n; i++) {
+        c[i] = mod26((p[i] - 'a') + key[i]) + 'a';
+        putchar(c[i]);
+    }
+
+    printf("\n");
+
+    // Find a new key that maps the same ciphertext
+    // to "cashnotneeded".
+    printf("Required new key stream: ");
+    for (int i = 0; i < n; i++) {
+        int k = mod26((c[i] - 'a') - (t[i] - 'a'));
+        printf("%d%s", k, i == n - 1 ? "\n" : " ");
+    }
+
+    return 0;
+}
