@@ -1,0 +1,77 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 500
+
+int mod26(int x) {
+    return ((x % 26) + 26) % 26;
+}
+
+int main(void) {
+    char plain[MAX] =
+        "meet me at the usual place at ten rather than eight oclock";
+    char p[MAX], c[MAX], recovered[MAX];
+    int n = 0;
+
+    for (int i = 0; plain[i]; i++) {
+        if (isalpha((unsigned char)plain[i]))
+            p[n++] = toupper((unsigned char)plain[i]);
+    }
+
+    // Pad with X if the number of letters is odd.
+    if (n % 2 != 0)
+        p[n++] = 'X';
+    p[n] = '\0';
+
+    // Inverse key matrix modulo 26.
+    // det(K) = 43 = 17 (mod 26)
+    // inverse of 17 modulo 26 is 23.
+    // K^-1 = [ 5 12 ]
+    //        [15 25 ]
+    int K[2][2] = {{9, 4}, {5, 7}};
+    int inv[2][2] = {{5, 12}, {15, 25}};
+
+    printf("Plaintext: %s\n", p);
+    printf("\nEncryption calculations:\n");
+
+    for (int i = 0; i < n; i += 2) {
+        int a = p[i] - 'A';
+        int b = p[i + 1] - 'A';
+
+        int x = mod26(K[0][0] * a + K[0][1] * b);
+        int y = mod26(K[1][0] * a + K[1][1] * b);
+
+        c[i] = x + 'A';
+        c[i + 1] = y + 'A';
+
+        printf("%c%c -> (%d,%d) -> %c%c\n",
+               p[i], p[i + 1], x, y, c[i], c[i + 1]);
+    }
+
+    c[n] = '\0';
+    printf("\nCiphertext: %s\n", c);
+
+    printf("\nDecryption calculations:\n");
+
+    for (int i = 0; i < n; i += 2) {
+        int a = c[i] - 'A';
+        int b = c[i + 1] - 'A';
+
+        int x = mod26(inv[0][0] * a + inv[0][1] * b);
+        int y = mod26(inv[1][0] * a + inv[1][1] * b);
+
+        recovered[i] = x + 'A';
+        recovered[i + 1] = y + 'A';
+
+        printf("%c%c -> (%d,%d) -> %c%c\n",
+               c[i], c[i + 1], x, y,
+               recovered[i], recovered[i + 1]);
+    }
+
+    recovered[n] = '\0';
+    printf("\nRecovered plaintext: %s\n", recovered);
+
+    return 0;
+}
