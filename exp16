@@ -1,0 +1,55 @@
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main(void) {
+    char cipher[5000], plain[5000];
+    int count[26] = {0};
+    int order[26], used[26] = {0};
+
+    const char english[] = "etaoinshrdlcumwfgypbvkjxqz";
+
+    printf("Enter ciphertext:\n");
+    if (!fgets(cipher, sizeof(cipher), stdin))
+        return 1;
+
+    for (int i = 0; cipher[i]; i++)
+        if (isalpha((unsigned char)cipher[i]))
+            count[tolower((unsigned char)cipher[i]) - 'a']++;
+
+    for (int i = 0; i < 26; i++) {
+        int best = -1;
+        for (int j = 0; j < 26; j++)
+            if (!used[j] &&
+                (best == -1 || count[j] > count[best]))
+                best = j;
+
+        order[i] = best;
+        used[best] = 1;
+    }
+
+    // Guess the substitution using English frequencies.
+    char map[26];
+    for (int i = 0; i < 26; i++)
+        map[order[i]] = english[i];
+
+    for (int i = 0; cipher[i]; i++) {
+        if (isalpha((unsigned char)cipher[i])) {
+            char ch = map[tolower((unsigned char)cipher[i]) - 'a'];
+            plain[i] = isupper((unsigned char)cipher[i])
+                     ? toupper((unsigned char)ch) : ch;
+        } else {
+            plain[i] = cipher[i];
+        }
+    }
+    plain[strlen(cipher)] = '\0';
+
+    printf("\nFrequency-based plaintext guess:\n%s\n", plain);
+    printf("\nSubstitution map (cipher -> guessed plain):\n");
+    for (int i = 0; i < 26; i++)
+        printf("%c -> %c\n", 'a' + i, map[i]);
+
+    return 0;
+}
