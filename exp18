@@ -1,0 +1,29 @@
+
+#include <stdio.h>
+#include <stdint.h>
+
+#define MASK28 0x0FFFFFFF
+
+int main(void) {
+    const int shifts[16] = {
+        1, 1, 2, 2, 2, 2, 2, 2,
+        1, 2, 2, 2, 2, 2, 2, 1
+    };
+
+    uint32_t C = 0x0F0F0F0;
+    uint32_t D = 0x0123456;
+
+    for (int round = 0; round < 16; round++) {
+        int s = shifts[round];
+
+        C = ((C << s) | (C >> (28 - s))) & MASK28;
+        D = ((D << s) | (D >> (28 - s))) & MASK28;
+
+        // A real DES implementation now applies PC-2
+        // to select 24 bits from C and 24 bits from D.
+        printf("Round %2d: C = %07X, D = %07X\n",
+               round + 1, C, D);
+    }
+
+    return 0;
+}
