@@ -1,0 +1,34 @@
+
+#include <stdio.h>
+
+int mod26(int x) {
+    return ((x % 26) + 26) % 26;
+}
+
+int main(void) {
+    int K[2][2] = {{9, 4}, {5, 7}};
+
+    // Chosen plaintext BA = (1,0)
+    // Chosen plaintext AB = (0,1)
+    int p[2][2] = {{1, 0}, {0, 1}};
+
+    int c[2][2];
+
+    for (int i = 0; i < 2; i++) {
+        c[i][0] = mod26(K[0][0] * p[i][0]
+                      + K[0][1] * p[i][1]);
+        c[i][1] = mod26(K[1][0] * p[i][0]
+                      + K[1][1] * p[i][1]);
+
+        printf("Chosen plaintext %c%c -> ciphertext %c%c\n",
+               p[i][0] + 'A', p[i][1] + 'A',
+               c[i][0] + 'A', c[i][1] + 'A');
+    }
+
+    // The ciphertexts reveal the columns of K.
+    printf("\nRecovered key matrix:\n");
+    printf("%d %d\n", c[0][0], c[1][0]);
+    printf("%d %d\n", c[0][1], c[1][1]);
+
+    return 0;
+}
