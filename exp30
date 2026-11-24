@@ -1,0 +1,32 @@
+
+#include <stdio.h>
+#include <stdint.h>
+
+// Demonstration using a simple XOR-based block function.
+// This is NOT a secure block cipher.
+
+uint32_t encrypt(uint32_t x,uint32_t key) {
+    return x ^ key;
+}
+
+int main() {
+    uint32_t X,key,T,Y,T2;
+
+    printf("Enter message block X: ");
+    scanf("%u",&X);
+
+    printf("Enter key: ");
+    scanf("%u",&key);
+
+    T=encrypt(X,key);
+
+    Y=X^T;
+
+    T2=encrypt(encrypt(X,key)^Y,key);
+
+    printf("One block MAC = %u\n",T);
+    printf("Second block = %u\n",Y);
+    printf("Two block MAC = %u\n",T2);
+
+    return 0;
+}
