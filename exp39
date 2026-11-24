@@ -1,0 +1,25 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char text[1000];
+
+    printf("Enter ciphertext: ");
+    fgets(text,sizeof(text),stdin);
+
+    for(int key=0;key<26;key++) {
+        printf("\nKey %d: ",key);
+
+        for(int i=0;text[i];i++) {
+            if(text[i]>='A' && text[i]<='Z')
+                putchar((text[i]-'A'-key+26)%26+'A');
+            else if(text[i]>='a' && text[i]<='z')
+                putchar((text[i]-'a'-key+26)%26+'a');
+            else
+                putchar(text[i]);
+        }
+    }
+
+    return 0;
+}
