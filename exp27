@@ -1,0 +1,32 @@
+
+#include <stdio.h>
+
+long long power(long long a,long long b,long long n) {
+    long long r=1;
+    while(b>0) {
+        if(b%2) r=(r*a)%n;
+        a=(a*a)%n;
+        b/=2;
+    }
+    return r;
+}
+
+int main() {
+    long long e,n;
+    char msg[100];
+
+    printf("Enter e and n: ");
+    scanf("%lld%lld",&e,&n);
+
+    printf("Enter message: ");
+    scanf("%99s",msg);
+
+    printf("Encrypted message: ");
+
+    for(int i=0;msg[i];i++) {
+        int m=msg[i]-'A';
+        printf("%lld ",power(m,e,n));
+    }
+
+    return 0;
+}
