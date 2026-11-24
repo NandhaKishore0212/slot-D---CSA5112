@@ -1,0 +1,34 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char data[300];
+    int block,len,pad;
+
+    printf("Enter plaintext in binary: ");
+    scanf("%299s",data);
+
+    printf("Enter block size: ");
+    scanf("%d",&block);
+
+    len=strlen(data);
+
+    if(block<=0 || len==0) {
+        printf("Invalid input\n");
+        return 1;
+    }
+
+    pad=block-(len%block);
+
+    data[len]='1';
+
+    for(int i=1;i<pad;i++)
+        data[len+i]='0';
+
+    data[len+pad]='\0';
+
+    printf("Padded data: %s\n",data);
+
+    return 0;
+}
