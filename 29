@@ -1,0 +1,24 @@
+
+#include <stdio.h>
+
+int main() {
+    int state[25]={0};
+    int rate=1024;
+    int capacity=1600-rate;
+    int lanes=capacity/64;
+
+    printf("Total state size = 1600 bits\n");
+    printf("Rate = %d bits\n",rate);
+    printf("Capacity = %d bits\n",capacity);
+    printf("Capacity lanes = %d\n",lanes);
+
+    printf("\nCapacity lanes:\n");
+
+    for(int i=0;i<lanes;i++)
+        printf("Lane %d = %d\n",i+1,state[i]);
+
+    printf("\nWithout permutation, capacity lanes ");
+    printf("remain zero forever.\n");
+
+    return 0;
+}
