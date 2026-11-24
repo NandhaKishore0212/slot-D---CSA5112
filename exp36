@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+int main() {
+    char p[100],c[100];
+    int key[100],n;
+
+    srand(time(NULL));
+
+    printf("Enter plaintext (A-Z): ");
+    scanf("%99s",p);
+
+    n=strlen(p);
+
+    printf("Random key: ");
+
+    for(int i=0;i<n;i++) {
+        key[i]=rand()%26;
+        printf("%d ",key[i]);
+        c[i]=((p[i]-'A'+key[i])%26)+'A';
+    }
+
+    c[n]='\0';
+
+    printf("\nEncrypted text: %s",c);
+
+    printf("\nDecrypted text: ");
+
+    for(int i=0;i<n;i++)
+        printf("%c",'A'+(c[i]-'A'-key[i]+26)%26);
+
+    return 0;
+}
