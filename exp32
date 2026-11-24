@@ -1,0 +1,42 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+long long power(long long a,long long b,long long p) {
+    long long r=1;
+    while(b>0) {
+        if(b%2) r=r*a%p;
+        a=a*a%p;
+        b/=2;
+    }
+    return r;
+}
+
+long long inverse(long long a,long long p) {
+    for(long long i=1;i<p;i++)
+        if((a*i)%p==1) return i;
+    return -1;
+}
+
+int main() {
+    long long p=23,q=11,g=4;
+    long long x=3;
+    long long y=power(g,x,p);
+    long long h=7,k,r,s;
+
+    for(int i=0;i<2;i++) {
+        k=3+i;
+
+        r=power(g,k,p)%q;
+
+        s=(inverse(k,q)*(h+x*r))%q;
+
+        printf("Signature %d:\n",i+1);
+        printf("r = %lld\n",r);
+        printf("s = %lld\n",s);
+    }
+
+    printf("Public key y = %lld\n",y);
+
+    return 0;
+}
